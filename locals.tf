@@ -1,34 +1,44 @@
-# TODO: insert locals here.
 locals {
-  managed_identities = {
-    system_assigned_user_assigned = (var.managed_identities.system_assigned || length(var.managed_identities.user_assigned_resource_ids) > 0) ? {
-      this = {
-        type                       = var.managed_identities.system_assigned && length(var.managed_identities.user_assigned_resource_ids) > 0 ? "SystemAssigned, UserAssigned" : length(var.managed_identities.user_assigned_resource_ids) > 0 ? "UserAssigned" : "SystemAssigned"
-        user_assigned_resource_ids = var.managed_identities.user_assigned_resource_ids
-      }
-    } : {}
-    system_assigned = var.managed_identities.system_assigned ? {
-      this = {
-        type = "SystemAssigned"
-      }
-    } : {}
-    user_assigned = length(var.managed_identities.user_assigned_resource_ids) > 0 ? {
-      this = {
-        type                       = "UserAssigned"
-        user_assigned_resource_ids = var.managed_identities.user_assigned_resource_ids
-      }
-    } : {}
-  }
-  # Private endpoint application security group associations.
-  # We merge the nested maps from private endpoints and application security group associations into a single map.
-  private_endpoint_application_security_group_associations = { for assoc in flatten([
-    for pe_k, pe_v in var.private_endpoints : [
-      for asg_k, asg_v in pe_v.application_security_group_associations : {
-        asg_key         = asg_k
-        pe_key          = pe_k
-        asg_resource_id = asg_v
-      }
-    ]
-  ]) : "${assoc.pe_key}-${assoc.asg_key}" => assoc }
+  image_template_body = merge(
+    {
+      properties = local.image_template_properties
+    },
+    local.image_template_identity == null ? {} : {
+      identity = local.image_template_identity
+    }
+  )
+  image_template_identity = var.identity == null ? null : merge(
+    {
+      type = var.identity.type
+    },
+    length(local.user_assigned_identity_map) == 0 ? {} : {
+      userAssignedIdentities = local.user_assigned_identity_map
+    }
+  )
+  image_template_properties = merge(
+    {
+      source     = var.source_image
+      customize  = var.customize
+      distribute = var.distribute
+    },
+    var.build_timeout_in_minutes == null ? {} : {
+      buildTimeoutInMinutes = var.build_timeout_in_minutes
+    },
+    var.staging_resource_group_id == null ? {} : {
+      stagingResourceGroupId = var.staging_resource_group_id
+    },
+    length(local.vm_profile) == 0 ? {} : {
+      vmProfile = local.vm_profile
+    }
+  )
   role_definition_resource_substring = "/providers/Microsoft.Authorization/roleDefinitions"
+  user_assigned_identity_map = var.identity == null || var.identity.user_assigned_resource_ids == null ? {} : {
+    for id in var.identity.user_assigned_resource_ids : id => {}
+  }
+  vm_profile = merge(
+    var.vm_profile_overrides,
+    var.vm_size == null ? {} : {
+      vmSize = var.vm_size
+    }
+  )
 }

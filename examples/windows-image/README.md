@@ -6,49 +6,99 @@ This example deploys the module to build a Windows image using Azure VM Image Bu
 
 ```hcl
 terraform {
-  required_version = "~> 1.5"
+  required_version = ">= 1.5.0, < 2.0.0"
 
   required_providers {
+    azapi = {
+      source  = "azure/azapi"
+      version = "1.12.0"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.21"
+      version = "4.21.0"
     }
     modtm = {
       source  = "azure/modtm"
-      version = "~> 0.3"
+      version = "0.3.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.5"
+      version = "3.5.1"
     }
   }
 }
+
 provider "azurerm" {
   features {}
 }
+
+# tflint-ignore: terraform_unused_required_providers
+provider "azapi" {}
+
+# tflint-ignore: terraform_unused_required_providers
+provider "modtm" {}
+
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "~> 0.1"
+  version = "0.1.0"
 }
+
 resource "random_integer" "region_index" {
   max = length(module.regions.regions) - 1
   min = 0
 }
+
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "~> 0.3"
+  version = "0.3.0"
 }
+
 resource "azurerm_resource_group" "this" {
   location = module.regions.regions[random_integer.region_index.result].name
   name     = module.naming.resource_group.name_unique
 }
-module "test" {
+
+module "image_template" {
   source = "../../"
 
-  location         = azurerm_resource_group.this.location
-  name             = "TODO" # TODO update with module.naming.<RESOURCE_TYPE>.name_unique
+  distribute = [
+    {
+      type          = "ManagedImage"
+      runOutputName = "windowsManagedImage"
+      location      = azurerm_resource_group.this.location
+      artifactTags = {
+        environment = "demo"
+      }
+      imageId = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.Compute/images/example-windows-image"
+    }
+  ]
+  location  = azurerm_resource_group.this.location
+  name      = "win11-image-template"
+  parent_id = azurerm_resource_group.this.id
+  source_image = {
+    type      = "PlatformImage"
+    publisher = "MicrosoftWindowsDesktop"
+    offer     = "windows-11"
+    sku       = "win11-23h2-ent"
+    version   = "latest"
+  }
+  customize = [
+    {
+      type = "PowerShell"
+      name = "ConfigureWinUpdates"
+      inline = [
+        "Write-Output 'Configuring Windows Update settings'"
+      ]
+      runAsSystem = true
+    }
+  ]
   enable_telemetry = var.enable_telemetry
-  parent_id        = azurerm_resource_group.this.id
+  identity = {
+    type = "SystemAssigned"
+  }
+  tags = {
+    environment = "demo"
+  }
 }
 ```
 
@@ -57,20 +107,22 @@ module "test" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.5)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.5.0, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.21)
+- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (1.12.0)
 
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (4.21.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
+- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (0.3.0)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (3.5.1)
 
 ## Resources
 
 The following resources are used by this module:
 
-- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
+- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/4.21.0/docs/resources/resource_group) (resource)
+- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/3.5.1/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -99,23 +151,23 @@ No outputs.
 
 The following Modules are called:
 
+### <a name="module_image_template"></a> [image\_template](#module\_image\_template)
+
+Source: ../../
+
+Version:
+
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
 Source: Azure/naming/azurerm
 
-Version: ~> 0.3
+Version: 0.3.0
 
 ### <a name="module_regions"></a> [regions](#module\_regions)
 
 Source: Azure/avm-utl-regions/azurerm
 
-Version: ~> 0.1
-
-### <a name="module_test"></a> [test](#module\_test)
-
-Source: ../../
-
-Version:
+Version: 0.1.0
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
