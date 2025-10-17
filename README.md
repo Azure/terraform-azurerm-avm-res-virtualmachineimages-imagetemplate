@@ -17,7 +17,7 @@ The following requirements are needed by this module:
 
 - <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5, < 4.0)
 
 ## Resources
 
@@ -175,7 +175,7 @@ Description: Tags to associate with the image template.
 
 Type: `map(string)`
 
-Default: `{}`
+Default: `null`
 
 ### <a name="input_vm_profile_overrides"></a> [vm\_profile\_overrides](#input\_vm\_profile\_overrides)
 

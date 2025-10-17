@@ -147,9 +147,8 @@ variable "staging_resource_group_id" {
 
 variable "tags" {
   type        = map(string)
-  default     = {}
+  default     = null
   description = "Tags to associate with the image template."
-  nullable    = false
 }
 
 variable "vm_profile_overrides" {
