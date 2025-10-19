@@ -84,10 +84,10 @@ module "image_template" {
   }
   customize = [
     {
-      type = "Shell"
+      type = "PowerShell"
       name = "InstallPackages"
       inline = [
-        "echo 'Running custom package install script'"
+        "Write-Output 'Running custom package install script'"
       ]
     }
   ]
