@@ -40,7 +40,7 @@ provider "modtm" {}
 
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "0.1.0"
+  version = "0.9.0"
 }
 
 resource "random_integer" "region_index" {
@@ -167,7 +167,7 @@ Version: 0.3.0
 
 Source: Azure/avm-utl-regions/azurerm
 
-Version: 0.1.0
+Version: 0.9.0
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
