@@ -1,5 +1,5 @@
 variable "distribute" {
-  type        = list(map(any))
+  type        = list(any)
   description = "Distribution targets for the built image. Must contain at least one entry."
   nullable    = false
 
@@ -38,7 +38,7 @@ variable "parent_id" {
 }
 
 variable "source_image" {
-  type        = map(any)
+  type        = any
   description = "Source configuration for the image template. Refer to Azure Image Builder documentation for supported fields."
   nullable    = false
 }
@@ -56,7 +56,7 @@ variable "build_timeout_in_minutes" {
 }
 
 variable "customize" {
-  type        = list(map(any))
+  type        = list(any)
   default     = []
   description = "List of customization steps to apply during image build."
   nullable    = false
