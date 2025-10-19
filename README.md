@@ -40,7 +40,7 @@ The following input variables are required:
 
 Description: Distribution targets for the built image. Must contain at least one entry.
 
-Type: `list(map(any))`
+Type: `list(any)`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
@@ -64,7 +64,7 @@ Type: `string`
 
 Description: Source configuration for the image template. Refer to Azure Image Builder documentation for supported fields.
 
-Type: `map(any)`
+Type: `any`
 
 ## Optional Inputs
 
@@ -82,7 +82,7 @@ Default: `240`
 
 Description: List of customization steps to apply during image build.
 
-Type: `list(map(any))`
+Type: `list(any)`
 
 Default: `[]`
 
