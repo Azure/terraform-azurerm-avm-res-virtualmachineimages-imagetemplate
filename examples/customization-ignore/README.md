@@ -58,6 +58,12 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
+resource "azurerm_user_assigned_identity" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = "${module.naming.user_assigned_identity.name_unique}-imagebuilder"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
 module "image_template" {
   source = "../../"
 
@@ -93,7 +99,8 @@ module "image_template" {
   ]
   enable_telemetry = var.enable_telemetry
   identity = {
-    type = "SystemAssigned"
+    type                       = "UserAssigned"
+    user_assigned_resource_ids = [azurerm_user_assigned_identity.this.id]
   }
   tags = {
     environment = "custom"
@@ -121,6 +128,7 @@ The following requirements are needed by this module:
 The following resources are used by this module:
 
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
