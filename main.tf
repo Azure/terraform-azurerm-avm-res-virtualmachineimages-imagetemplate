@@ -9,6 +9,15 @@ resource "azapi_resource" "image_template" {
   read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   tags           = var.tags == null ? {} : var.tags
   update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+
+  dynamic "identity" {
+    for_each = var.identity != null ? [var.identity] : []
+
+    content {
+      type         = identity.value.type
+      identity_ids = identity.value.user_assigned_resource_ids
+    }
+  }
 }
 
 resource "azurerm_management_lock" "this" {

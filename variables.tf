@@ -79,15 +79,11 @@ variable "identity" {
     user_assigned_resource_ids = optional(set(string), null)
   })
   default     = null
-  description = "Managed identity configuration for the image template."
+  description = "Managed identity configuration for the image template. Only UserAssigned identity type is supported for Image Builder."
 
   validation {
-    condition = var.identity == null ? true : contains([
-      "SystemAssigned",
-      "UserAssigned",
-      "SystemAssigned, UserAssigned"
-    ], var.identity.type)
-    error_message = "Identity type must be one of SystemAssigned, UserAssigned, or SystemAssigned, UserAssigned."
+    condition     = var.identity == null ? true : var.identity.type == "UserAssigned"
+    error_message = "Identity type must be UserAssigned. Image Builder does not support SystemAssigned identities."
   }
 }
 

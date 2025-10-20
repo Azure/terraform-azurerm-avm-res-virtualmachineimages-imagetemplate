@@ -98,7 +98,7 @@ Default: `true`
 
 ### <a name="input_identity"></a> [identity](#input\_identity)
 
-Description: Managed identity configuration for the image template.
+Description: Managed identity configuration for the image template. Only UserAssigned identity type is supported for Image Builder.
 
 Type:
 
