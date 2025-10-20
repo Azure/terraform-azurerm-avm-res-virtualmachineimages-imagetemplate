@@ -3,7 +3,7 @@ resource "azapi_resource" "image_template" {
   name           = var.name
   parent_id      = var.parent_id
   type           = "Microsoft.VirtualMachineImages/imageTemplates@2024-02-01"
-  body           = jsonencode(local.image_template_body)
+  body           = local.image_template_body
   create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
