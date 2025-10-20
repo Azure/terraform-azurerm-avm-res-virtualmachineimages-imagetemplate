@@ -51,6 +51,12 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
+resource "azurerm_user_assigned_identity" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = "${module.naming.user_assigned_identity.name_unique}-imagebuilder"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
 module "image_template" {
   source = "../../"
 
@@ -104,7 +110,8 @@ module "image_template" {
   ]
   enable_telemetry = var.enable_telemetry
   identity = {
-    type = "SystemAssigned"
+    type                       = "UserAssigned"
+    user_assigned_resource_ids = [azurerm_user_assigned_identity.this.id]
   }
   tags = {
     environment = "demo"
