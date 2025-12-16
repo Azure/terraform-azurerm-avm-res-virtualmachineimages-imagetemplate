@@ -47,7 +47,6 @@ variable "build_timeout_in_minutes" {
   type        = number
   default     = 240
   description = "Timeout for the image build in minutes."
-  nullable    = false
 
   validation {
     condition     = var.build_timeout_in_minutes >= 30 && var.build_timeout_in_minutes <= 960
@@ -59,7 +58,6 @@ variable "customize" {
   type        = list(any)
   default     = []
   description = "List of customization steps to apply during image build."
-  nullable    = false
 }
 
 variable "enable_telemetry" {
@@ -67,10 +65,9 @@ variable "enable_telemetry" {
   default     = true
   description = <<DESCRIPTION
 This variable controls whether or not telemetry is enabled for the module.
-For more information see <https://aka.ms/avm/telemetryinfo>.
+For more information see https://aka.ms/avm/telemetryinfo.
 If it is set to false, then no telemetry will be collected.
 DESCRIPTION
-  nullable    = false
 }
 
 variable "identity" {
@@ -132,7 +129,6 @@ A map of role assignments to create on this resource. The map key is deliberatel
 
 > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
 DESCRIPTION
-  nullable    = false
 }
 
 variable "staging_resource_group_id" {
@@ -151,12 +147,10 @@ variable "vm_profile_overrides" {
   type        = map(any)
   default     = {}
   description = "Additional VM profile properties to merge with the defaults when building the image."
-  nullable    = false
 }
 
 variable "vm_size" {
   type        = string
   default     = "Standard_D2s_v3"
   description = "VM size used during image build."
-  nullable    = false
 }
