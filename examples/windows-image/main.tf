@@ -90,6 +90,7 @@ module "image_template" {
       inline = [
         "Write-Output 'Configuring Windows Update settings'"
       ]
+      runElevated = true
       runAsSystem = true
     }
   ]
