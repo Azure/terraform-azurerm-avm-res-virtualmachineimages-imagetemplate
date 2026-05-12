@@ -1,6 +1,14 @@
-output "private_endpoints" {
-  description = <<DESCRIPTION
-  A map of the private endpoints created.
-  DESCRIPTION
-  value       = var.private_endpoints_manage_dns_zone_group ? azurerm_private_endpoint.this_managed_dns_zone_groups : azurerm_private_endpoint.this_unmanaged_dns_zone_groups
+output "location" {
+  description = "The Azure region where the image template is deployed."
+  value       = azapi_resource.image_template.location
+}
+
+output "name" {
+  description = "The name of the image template resource."
+  value       = azapi_resource.image_template.name
+}
+
+output "resource_id" {
+  description = "The fully qualified resource ID of the image template."
+  value       = azapi_resource.image_template.id
 }
