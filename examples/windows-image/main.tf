@@ -36,6 +36,50 @@ module "regions" {
   version = "0.9.0"
 
   is_recommended = true
+  region_filter = [
+    "eastus",
+    "eastus2",
+    "centralus",
+    "westcentralus",
+    "westus",
+    "westus2",
+    "southcentralus",
+    "westus3",
+    "canadacentral",
+    "northeurope",
+    "westeurope",
+    "japaneast",
+    "southafricanorth",
+    "jioindiawest",
+    "eastasia",
+    "southeastasia",
+    "norwayeast",
+    "uksouth",
+    "ukwest",
+    "uaenorth",
+    "germanywestcentral",
+    "australiaeast",
+    "australiasoutheast",
+    "switzerlandnorth",
+    "centralindia",
+    "francecentral",
+    "koreacentral",
+    "northcentralus",
+    "brazilsouth",
+    "qatarcentral",
+    "polandcentral",
+    "swedencentral",
+    "italynorth",
+    "israelcentral",
+    "spaincentral",
+    "jioindiacentral",
+    "mexicocentral",
+    "newzealandnorth",
+    "indonesiacentral",
+    "chilecentral",
+    "malaysiawest",
+    "austriaeast"
+  ]
 }
 
 resource "random_integer" "region_index" {
