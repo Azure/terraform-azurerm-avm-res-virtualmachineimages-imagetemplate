@@ -68,6 +68,8 @@ if [ -n "${COPILOT_AGENT_ACTION}" ]; then
   # Mount host's CA bundle to container's expected paths
   SSL_CERT_MOUNTS="${SSL_CERT_MOUNTS} -v /etc/ssl/certs/ca-certificates.crt:/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem:ro"
   SSL_CERT_MOUNTS="${SSL_CERT_MOUNTS} -v /etc/ssl/certs/ca-certificates.crt:/etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt:ro"
+  SSL_CERT_MOUNTS="${SSL_CERT_MOUNTS} -v /etc/ssl/certs/ca-certificates.crt:/etc/pki/tls/certs/ca-bundle.crt:ro"
+  export GIT_SSL_CAINFO=/etc/pki/tls/certs/ca-bundle.crt
 fi
 
 # New: allow overriding TUI behavior with PORCH_FORCE_TUI and PORCH_NO_TUI environment variables.
@@ -129,6 +131,7 @@ if [ -z "${AVM_IN_CONTAINER}" ]; then
     -e ARM_TENANT_ID \
     -e ARM_USE_OIDC \
     -e FORCE_COLOR \
+    -e GIT_SSL_CAINFO \
     -e GITHUB_TOKEN \
     -e NO_COLOR \
     -e PORCH_LOG_LEVEL \
