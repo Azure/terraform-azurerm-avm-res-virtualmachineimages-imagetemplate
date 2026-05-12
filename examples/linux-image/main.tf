@@ -34,6 +34,8 @@ provider "modtm" {}
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
   version = "0.9.0"
+
+  is_recommended = true
 }
 
 resource "random_integer" "region_index" {
