@@ -33,7 +33,7 @@ provider "modtm" {}
 
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "0.9.0"
+  version = "0.12.0"
 
   is_recommended = true
   region_filter = [
