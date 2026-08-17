@@ -8,7 +8,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
     modtm = {
       source  = "azure/modtm"
@@ -33,7 +33,7 @@ provider "modtm" {}
 
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "0.9.0"
+  version = "0.12.0"
 
   is_recommended = true
   region_filter = [
@@ -89,7 +89,7 @@ resource "random_integer" "region_index" {
 
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  version = "0.4.3"
 }
 
 resource "azurerm_resource_group" "this" {
