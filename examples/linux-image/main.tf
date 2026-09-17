@@ -35,7 +35,8 @@ module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
   version = "0.9.0"
 
-  is_recommended = true
+  enable_telemetry = false
+  is_recommended   = true
   region_filter = [
     "eastus",
     "eastus2",
@@ -154,7 +155,7 @@ module "image_template" {
       ]
     }
   ]
-  enable_telemetry = var.enable_telemetry
+  enable_telemetry = false
   identity = {
     type                       = "UserAssigned"
     user_assigned_resource_ids = [azurerm_user_assigned_identity.this.id]
