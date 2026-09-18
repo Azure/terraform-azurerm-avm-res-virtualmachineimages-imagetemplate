@@ -42,7 +42,7 @@ module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
   version = "0.9.0"
 
-  enable_telemetry = false
+  enable_telemetry = var.enable_telemetry
   is_recommended   = true
   region_filter = [
     "eastus",
@@ -144,7 +144,7 @@ module "image_template" {
       ]
     }
   ]
-  enable_telemetry = false
+  enable_telemetry = var.enable_telemetry
   identity = {
     type                       = "UserAssigned"
     user_assigned_resource_ids = [azurerm_user_assigned_identity.this.id]
@@ -195,7 +195,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ## Outputs
 
