@@ -33,7 +33,7 @@ provider "modtm" {}
 
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "0.9.0"
+  version = "0.12.0"
 
   enable_telemetry = var.enable_telemetry
   is_recommended   = true
@@ -90,7 +90,7 @@ resource "random_integer" "region_index" {
 
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  version = "0.4.3"
 }
 
 resource "azurerm_resource_group" "this" {
