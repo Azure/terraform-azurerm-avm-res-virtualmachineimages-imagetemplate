@@ -1,7 +1,12 @@
-mock_provider "azapi" {}
+mock_provider "azapi" {
+  mock_data "azapi_client_config" {
+    defaults = {
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000000"
+    }
+  }
+}
 mock_provider "azurerm" {}
-mock_provider "modtm" {}
-mock_provider "random" {}
+mock_provider "terraform" {}
 
 variables {
   distribute = [{
@@ -75,5 +80,47 @@ run "custom_tags_are_preserved" {
   assert {
     condition     = azapi_resource.image_template.tags == var.tags
     error_message = "All supplied tags must reach the resource without additions or replacements."
+  }
+}
+
+run "disabled_telemetry_creates_no_payload" {
+  command = plan
+
+  assert {
+    condition = (
+      length(azapi_resource.telemetry) == 0 &&
+      length(terraform_data.telemetry) == 0 &&
+      length(data.azapi_client_config.telemetry) == 0
+    )
+    error_message = "Disabling telemetry must omit the deployment, instance and client lookup."
+  }
+}
+
+run "enabled_telemetry_uses_an_empty_subscription_deployment" {
+  command = plan
+
+  variables {
+    enable_telemetry = true
+    tags = {
+      environment = "unit"
+    }
+  }
+
+  assert {
+    condition = (
+      length(azapi_resource.telemetry) == 1 &&
+      length(terraform_data.telemetry) == 1 &&
+      azapi_resource.telemetry[0].type == "Microsoft.Resources/deployments@2025-04-01" &&
+      azapi_resource.telemetry[0].location == var.location &&
+      azapi_resource.telemetry[0].parent_id == "/subscriptions/00000000-0000-0000-0000-000000000000" &&
+      azapi_resource.telemetry[0].body.properties.mode == "Incremental" &&
+      length(azapi_resource.telemetry[0].body.properties.template.resources) == 0
+    )
+    error_message = "Enabled telemetry must use an empty incremental deployment in the active subscription and requested region."
+  }
+
+  assert {
+    condition     = azapi_resource.image_template.tags == var.tags
+    error_message = "Enabling telemetry must not change the image template's supplied tags."
   }
 }
