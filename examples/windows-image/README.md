@@ -28,13 +28,16 @@ provider "azurerm" {
   features {}
 }
 
-# tflint-ignore: terraform_unused_required_providers
 provider "azapi" {}
 
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
-  version = "0.9.0"
+  version = "0.13.0"
+  providers = {
+    azapi = azapi
+  }
 
+  location         = var.location
   enable_telemetry = var.enable_telemetry
   is_recommended   = true
   region_filter = [
@@ -89,18 +92,18 @@ resource "random_integer" "region_index" {
 }
 
 module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  source  = "Azure/avm-utl-naming/azure"
+  version = "0.2.0"
 }
 
 resource "azurerm_resource_group" "this" {
   location = module.regions.regions[random_integer.region_index.result].name
-  name     = module.naming.resource_group.name_unique
+  name     = module.naming.names.resource_group.name_unique
 }
 
 resource "azurerm_user_assigned_identity" "this" {
   location            = azurerm_resource_group.this.location
-  name                = "${module.naming.user_assigned_identity.name_unique}-imagebuilder"
+  name                = "${module.naming.names.user_assigned_identity.name_unique}-imagebuilder"
   resource_group_name = azurerm_resource_group.this.name
 }
 
@@ -190,6 +193,14 @@ Type: `bool`
 
 Default: `true`
 
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: The Azure region for this module's resources or telemetry deployment.
+
+Type: `string`
+
+Default: `"eastus"`
+
 ## Outputs
 
 No outputs.
@@ -206,15 +217,15 @@ Version:
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
-Source: Azure/naming/azurerm
+Source: Azure/avm-utl-naming/azure
 
-Version: 0.3.0
+Version: 0.2.0
 
 ### <a name="module_regions"></a> [regions](#module\_regions)
 
 Source: Azure/avm-utl-regions/azurerm
 
-Version: 0.9.0
+Version: 0.13.0
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
