@@ -4,7 +4,7 @@ resource "azapi_resource" "image_template" {
   parent_id = var.parent_id
   type      = "Microsoft.VirtualMachineImages/imageTemplates@2024-02-01"
   body      = local.image_template_body
-  tags      = var.tags == null ? {} : var.tags
+  tags      = var.tags
 
   dynamic "identity" {
     for_each = var.identity != null ? [var.identity] : []
